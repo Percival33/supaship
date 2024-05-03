@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import detect from "detect-port";
-import { Browser, expect, Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 
 export async function setupE2eTest() {
     await startSupabase();
@@ -64,4 +64,19 @@ export async function login(page: Page, email: string, password: string, userNam
     await expect(logoutButton).toHaveCount(1);
     const userNameMention = page.locator("h2", { hasText: userName });
     await expect(userNameMention).toHaveCount(1);
+}
+
+export async function createPost(page: Page, title: string, contents: string) {
+    page.goto("/1");
+    const postTitleInput = page.locator('input[name="title"]');
+    const postContentInput = page.locator('textarea[name="contents"]');
+    const postSubmitButton = page.locator("button[type='submit']");
+
+    await postTitleInput.fill(title);
+    await postContentInput.fill(contents);
+    await postSubmitButton.click();
+
+    const post = page.locator("h3", { hasText: title });
+    await expect(post).toHaveCount(1);
+    return post;
 }
