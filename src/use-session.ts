@@ -63,7 +63,7 @@ export function useSession(): SupashipUserInfo {
                     event: '*',
                     schema: "public",
                     table: "user_profiles",
-                    filter: `user_iq=eq.${ userId }`,
+                    filter: `user_id=eq.${ userId }`,
                 },
                 (payload) => {
                     setUserInfo({ ...userInfo, profile: payload.new as UserProfile });
@@ -71,6 +71,7 @@ export function useSession(): SupashipUserInfo {
             )
             .subscribe();
     }
+    console.log("userInfo: ", userInfo, new Date());
 
     return userInfo;
 }
