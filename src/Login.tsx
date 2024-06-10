@@ -20,6 +20,7 @@ export default function Login() {
         <>
             <div className="flex m-4 place-items-center">
                 <button
+                    className="login-button"
                     onClick={ () => {
                         setShowModal(true);
                         setAuthMode("sign_in")
@@ -29,6 +30,7 @@ export default function Login() {
                 </button>
                 <span className="p-2"> or </span>{ " " }
                 <button
+                    className="login-button"
                     onClick={ () => {
                         setShowModal(true);
                         setAuthMode("sign_up")
@@ -39,13 +41,12 @@ export default function Login() {
             </div>
             <Dialog
                 open={ showModal }
-                diaglogStateChange={ (open) => setShowModal(open) }
+                dialogStateChange={ (open) => setShowModal(open) }
                 contents={
                 <>
                     {
                         <Auth
                             supabaseClient={ supaClient }
-                            view={ authMode }
                             appearance={{
                                 theme: ThemeSupa,
                                 className: {
@@ -53,9 +54,9 @@ export default function Login() {
                                     label: "login-form-label",
                                     button: "login-form-button",
                                     input: "login-form-input",
-                                }
-
+                                },
                             }}
+                            view={ authMode }
                         />
                     }
                     <button onClick={ () => setShowModal(false) }>Close</button>
