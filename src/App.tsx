@@ -1,7 +1,7 @@
 import "./App.css";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import MessageBoard from "./MessageBoard.tsx";
-import Welcome from "./Welcome.tsx";
+import Welcome, {welcomeLoader} from "./Welcome.tsx";
 import AllPosts from "./AllPosts.tsx";
 import PostView from "./PostView.tsx";
 import NavBar from "./NavBar.tsx";
@@ -30,6 +30,7 @@ const router = createBrowserRouter([
             {
                 path: "welcome",
                 element: <Welcome/>,
+                loader: welcomeLoader,
             }
         ],
     },
