@@ -1,6 +1,6 @@
-import { execSync } from "child_process";
+import {execSync} from "child_process";
 import detect from "detect-port";
-import { expect, Page } from "@playwright/test";
+import {expect, Page} from "@playwright/test";
 
 export async function setupE2eTest() {
     await startSupabase();
@@ -17,14 +17,25 @@ async function startSupabase() {
 }
 
 function reseedDb() {
-    execSync(
-        "PGPASSWORD=postgres psql -U postgres -h 127.0.0.1 -p 54322 -f supabase/clear-db-data.sql",
-        { stdio: "ignore" }
-    );
+    const postgresPath = '/opt/homebrew/opt/postgresql@15/bin'; // Adjust this if your path is different
+    const currentPath = process.env.PATH;
+    const newPath = `${postgresPath}:${currentPath}`;
+
+    try {
+        execSync("which psql", { stdio: "inherit" })
+        // execSync(
+        //     "PGPASSWORD=postgres psql -U postgres -h 127.0.0.1 -p 54322 -d postgres -f supabase/clear-db-data.sql",
+        //     {env: {...process.env, newPath}, stdio: "inherit",} // Changed from "ignore" to "inherit" to capture the output
+        // );
+    } catch (error) {
+        console.error('Error executing command:', error.message);
+        console.error('Command output:', error.output);
+        throw error; // Re-throw the error after logging it
+    }
 }
 
 export async function signUp(page: Page, email: string, password: string, userName: string, skipUserName = false) {
-    const signUpButton = page.locator("button", { hasText: "Sign up" }).first();
+    const signUpButton = page.locator("button", {hasText: "Sign up"}).first();
     await signUpButton.click();
 
     const emailInput = page.locator('input[name="email"]');
@@ -33,7 +44,7 @@ export async function signUp(page: Page, email: string, password: string, userNa
     await passwordInput.fill(password);
     await page.keyboard.press("Enter");
 
-    const welcomeNotice = page.locator("h2", { hasText: "Welcome to Supaship!" });
+    const welcomeNotice = page.locator("h2", {hasText: "Welcome to Supaship!"});
     await expect(welcomeNotice).toHaveCount(1);
 
     if (skipUserName) {
@@ -41,16 +52,16 @@ export async function signUp(page: Page, email: string, password: string, userNa
     }
     const usernameInput = page.locator('input[name="username"]');
     await usernameInput.fill(userName);
-    const submitButton = page.locator("button", { hasText: "Submit" });
+    const submitButton = page.locator("button", {hasText: "Submit"});
     await expect(submitButton).toBeEnabled();
     await page.keyboard.press("Enter");
 
-    const logoutButton = page.locator("button", { hasText: "Logout" });
+    const logoutButton = page.locator("button", {hasText: "Logout"});
     await expect(logoutButton).toHaveCount(1);
 }
 
 export async function login(page: Page, email: string, password: string, userName: string, loginButtonSelector = "button") {
-    const signUpButton = page.locator(loginButtonSelector, { hasText: "Login" }).first();
+    const signUpButton = page.locator(loginButtonSelector, {hasText: "Login"}).first();
     await signUpButton.click();
 
     const emailInput = page.locator('input[name="email"]');
@@ -60,9 +71,9 @@ export async function login(page: Page, email: string, password: string, userNam
     await passwordInput.fill(password);
     await page.keyboard.press("Enter");
 
-    const logoutButton = page.locator("button", { hasText: "Logout" });
+    const logoutButton = page.locator("button", {hasText: "Logout"});
     await expect(logoutButton).toHaveCount(1);
-    const userNameMention = page.locator("h2", { hasText: userName });
+    const userNameMention = page.locator("h2", {hasText: userName});
     await expect(userNameMention).toHaveCount(1);
 }
 
@@ -76,7 +87,7 @@ export async function createPost(page: Page, title: string, contents: string) {
     await postContentInput.fill(contents);
     await postSubmitButton.click();
 
-    const post = page.locator("h3", { hasText: title });
+    const post = page.locator("h3", {hasText: title});
     await expect(post).toHaveCount(1);
     return post;
 }
