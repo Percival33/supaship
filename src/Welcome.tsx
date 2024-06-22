@@ -53,6 +53,7 @@ export default function Welcome() {
                                 }
                             ])
                             .then(({error}) => {
+                                console.log(error);
                                 if (error) {
                                     setServerError(`Username "${userName}" is already taken`);
                                 } else {
@@ -105,7 +106,7 @@ function validateUsername(username: string): string | undefined {
     }
     const regex = /^[a-zA-Z0-9_]+$/;
     if (username.length < 4) {
-        return "Username must be at least 4 chracters long";
+        return "Username must be at least 4 characters long";
     }
     if (username.length > 14) {
         return "Username must be less than 15 characters long";

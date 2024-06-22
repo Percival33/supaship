@@ -23,10 +23,10 @@ function reseedDb() {
 
     try {
         execSync("which psql", { stdio: "inherit" })
-        // execSync(
-        //     "PGPASSWORD=postgres psql -U postgres -h 127.0.0.1 -p 54322 -d postgres -f supabase/clear-db-data.sql",
-        //     {env: {...process.env, newPath}, stdio: "inherit",} // Changed from "ignore" to "inherit" to capture the output
-        // );
+        execSync(
+            "PGPASSWORD=postgres psql -U postgres -h 127.0.0.1 -p 54322 -d postgres -f supabase/clear-db-data.sql",
+            {env: {...process.env, newPath}, stdio: "inherit",} // Changed from "ignore" to "inherit" to capture the output
+        );
     } catch (error) {
         console.error('Error executing command:', error.message);
         console.error('Command output:', error.output);
@@ -46,6 +46,7 @@ export async function signUp(page: Page, email: string, password: string, userNa
 
     const welcomeNotice = page.locator("h2", {hasText: "Welcome to Supaship!"});
     await expect(welcomeNotice).toHaveCount(1);
+    // await expect(page.getByRole('link', { name: 'Message Board', exact: true })).toBeVisible();
 
     if (skipUserName) {
         return;
